@@ -7,10 +7,10 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 
-def download_EPICs(filepath):
+def download_EPICs(filepath, api_key):
     url = 'https://api.nasa.gov/EPIC/api/natural/images'
     params = {
-        'api_key': os.getenv('NASA_API_TOKEN'),
+        'api_key': api_key,
     }
     response = requests.get(url, params=params)
     response.raise_for_status()
@@ -20,7 +20,7 @@ def download_EPICs(filepath):
     for epic_number, epic in enumerate(epics):
         date = epic['date']
         image_name = epic['image']
-        datetime_date = strptime(date)
+        datetime_date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
         image_url = image_url_template.format(datetime_date.year, datetime_date.month, datetime_date.day, image_name)
         response = requests.get(image_url, params=params)
         filename = image_template.format(epic_number)
@@ -29,16 +29,13 @@ def download_EPICs(filepath):
             file.write(response.content)
 
 
-def strptime(date):
-    datetime_object = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
-    return datetime_object
-
-
 def main():
     load_dotenv()
-    filepath = '/home/eugene/DEVMAN_TASKS/Space/images/NASA'
-    Path(filepath).mkdir(parents=True, exist_ok=True)
-    download_EPICs(filepath)
+    api_key = os.getenv('NASA_API_TOKEN')
+    relative_path = Path('DEVMAN_TASKS/Space/images/NASA')
+    absolute_path = relative_path.resolve()
+    Path(absolute_path).mkdir(parents=True, exist_ok=True)
+    download_EPICs(absolute_path, api_key)
 
 
 if __name__ == '__main__':

@@ -21,16 +21,17 @@ def fetch_spacex_last_launch(filepath, launch_id):
 
 
 def create_parser():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description='Скрипт предназначен для скачивания фото с последнего запука ракеты SpaceX')
     parser.add_argument('launch_id', default='latest')
     return parser
 
 
 def main():
-    filepath = '/home/eugene/DEVMAN_TASKS/Space/images/SpaceX'
-    Path(filepath).mkdir(parents=True, exist_ok=True)
+    relative_path = Path('DEVMAN_TASKS/Space/images/SpaceX')
+    absolute_path = relative_path.resolve()
+    Path(absolute_path).mkdir(parents=True, exist_ok=True)
     launch_id = create_parser().parse_args().launch_id
-    fetch_spacex_last_launch(filepath, launch_id)
+    fetch_spacex_last_launch(absolute_path, launch_id)
 
 
 if __name__ == '__main__':
