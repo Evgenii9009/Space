@@ -1,7 +1,9 @@
 import requests
-import os
 import argparse
+
+
 from pathlib import Path
+from get_APODs import check_and_save
 
 
 def fetch_spacex_last_launch(filepath, launch_id):
@@ -10,19 +12,16 @@ def fetch_spacex_last_launch(filepath, launch_id):
     response = requests.get(launch_url)
     response.raise_for_status()
     image_links = response.json()['links']['flickr']['original']
-    image_template = 'spaceX{}.jpeg'
+    image_template = 'spaceX{}{}'
     for link_number, link in enumerate(image_links):
-        filename = image_template.format(link_number)
-        image_path = os.path.join(filepath, filename)
         response = requests.get(link)
-        response.raise_for_status()
-        with open(image_path, 'wb') as file:
-            file.write(response.content)
+        extension = '.jpeg'
+        check_and_save(response, image_template, link_number, extension, filepath)
 
 
 def create_parser():
     parser = argparse.ArgumentParser(description='Скрипт предназначен для скачивания фото с последнего запука ракеты SpaceX')
-    parser.add_argument('launch_id', default='latest')
+    parser.add_argument('--launch_id', default='5eb87d47ffd86e000604b38a')
     return parser
 
 

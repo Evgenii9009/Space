@@ -5,6 +5,7 @@ import os
 from datetime import datetime
 from dotenv import load_dotenv
 from pathlib import Path
+from get_APODs import check_and_save
 
 
 def download_EPICs(filepath, api_key):
@@ -16,17 +17,15 @@ def download_EPICs(filepath, api_key):
     response.raise_for_status()
     epics = response.json()
     image_url_template = 'https://epic.gsfc.nasa.gov/archive/natural/{}/{}/{}/png/{}.png'
-    image_template = 'NASA_EPIC{}.png'
+    image_template = 'NASA_EPIC{}{}'
     for epic_number, epic in enumerate(epics):
         date = epic['date']
         image_name = epic['image']
         datetime_date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
         image_url = image_url_template.format(datetime_date.year, datetime_date.month, datetime_date.day, image_name)
         response = requests.get(image_url, params=params)
-        filename = image_template.format(epic_number)
-        image_path = os.path.join(filepath, filename)
-        with open(image_path, 'wb') as file:
-            file.write(response.content)
+        extension = '.png'
+        check_and_save(response, image_template, epic_number, extension, filepath)
 
 
 def main():

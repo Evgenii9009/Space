@@ -31,13 +31,14 @@ def send_photos(filepaths, bot, sleeping_time, chat_id):
 
 def main():
     load_dotenv()
-    chat_id = os.getenv('chat_id')
+    chat_id = os.getenv('CHAT_ID')
     relative_path = Path('DEVMAN_TASKS/Space/images')
     absolute_path = relative_path.resolve()
     filepaths = get_file_paths(absolute_path)
     random.shuffle(filepaths)
-    sleeping_time = create_parser().parse_args().time
-    image_path = create_parser().parse_args().image_path
+    args = create_parser().parse_args()
+    sleeping_time = args.time
+    image_path = args.image_path
     tg_token = os.getenv('TG_TOKEN')
     bot = telegram.Bot(tg_token)
     if image_path:
