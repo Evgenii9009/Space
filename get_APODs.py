@@ -2,9 +2,11 @@ import requests
 import os
 import urllib
 
+
 from os.path import splitext
 from dotenv import load_dotenv
 from pathlib import Path
+from functions import check_and_save, define_extension
 
 
 def download_APODs(filepath, api_key):
@@ -26,21 +28,6 @@ def download_APODs(filepath, api_key):
         except requests.exceptions.MissingSchema:
             continue
         check_and_save(response, image_template, apod_number, extension, filepath)
-
-
-def check_and_save(response, image_template, image_number, extension, filepath):
-    response.raise_for_status()
-    filename = image_template.format(image_number, extension)
-    image_path = os.path.join(filepath, filename)
-    with open(image_path, 'wb') as file:
-        file.write(response.content)
-
-
-def define_extension(url):
-    unquoted_url = urllib.parse.unquote(url)
-    path = urllib.parse.urlsplit(unquoted_url).path
-    extension = str(splitext(path)[1])
-    return extension
 
 
 def main():

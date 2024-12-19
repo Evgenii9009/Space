@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 from dotenv import load_dotenv
 from pathlib import Path
-from get_APODs import check_and_save
+from functions import check_and_save
 
 
 def download_EPICs(filepath, api_key):

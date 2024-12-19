@@ -3,7 +3,7 @@ import argparse
 
 
 from pathlib import Path
-from get_APODs import check_and_save
+from functions import check_and_save
 
 
 def fetch_spacex_last_launch(filepath, launch_id):
